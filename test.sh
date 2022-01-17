@@ -4,11 +4,14 @@ Assert(){
 	INPUT="$1"
 	EXPECT="$2"
 
-	ACTUAL=$(cc2 "$INPUT" > test.s && gcc test.s)
+	./cc2 --input "$INPUT" > test.s
+	gcc test.s -o test
+	./test
+	ACTUAL="$?"
 
 	if [ "$ACTUAL" = "$EXPECT"  ]
 	then
-		echo "$INPUT" => "ACTUAL"
+		echo "$INPUT => $ACTUAL"
 	else
 		echo "input : $INPUT"
 		echo "expect : $EXPECT"
@@ -17,11 +20,13 @@ Assert(){
 	fi
 }
 
-gcc cc2.c -o cc2.c
+make
 
 echo "test begin"
 
-
+Assert "62" "62"
+Assert "4+5-2" "7"
+Assert "30 + 12 +2 - 10" "34"
 
 echo "-------------------"
 echo "---test all pass---"
