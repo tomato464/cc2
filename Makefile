@@ -3,7 +3,7 @@ CFLAGS=-Wall -g -static
 
 TARGET=cc2
 
-OBJS=cc2.o tokenize.o
+OBJS=cc2.o tokenize.o parse.o generate.o
 
 .SUFFIXES : .c .o
 

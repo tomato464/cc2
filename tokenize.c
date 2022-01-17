@@ -6,6 +6,8 @@
 Token *head = NULL;
 Token *cur = NULL;
 
+#define RESERVED_NUM 6
+char *reserved_chrs[RESERVED_NUM] = {"+", "-", "*", "/", "(", ")"};
 static Token *CreateToken(TokenType type)
 {
 	Token *token;
@@ -20,22 +22,17 @@ static Token *CreateToken(TokenType type)
 static void InsertReservedToken(char *p)
 {
 	Token *token = CreateToken(TK_RESERVED);
-	if(*p == '+'){
-		token->str = p;//point in input, not copy
-	}else if(*p == '-'){
-		token->str = p;
-	}else{
-		fprintf(stderr, "unexpected str %c\n", *p);
-		exit(1);
-	}
+
+	token->str = p;//point in input, not copy
 
 	cur->next = token;
 	cur = token;
 }
 
-static void InsertNumToken(int num)
+static void InsertNumToken(char *p, int num)
 {
 	Token *token = CreateToken(TK_NUM);
+	token->str = p;
 	token->num = num;
 	cur->next = token;
 	cur = token;
@@ -51,8 +48,16 @@ static bool IsSpace(char *p)
 
 static bool IsReserved(char *p)
 {
-	if(*p == '+' || *p == '-'){
-		return true;
+	char *reserved;
+	for(int i = 0; i < RESERVED_NUM; i++){
+		reserved = reserved_chrs[i];
+		if(!reserved){
+			return false;
+		}
+
+		if(!strncmp(p, reserved, 1)){
+			return true;
+		}
 	}
 	return false;
 }
@@ -85,7 +90,7 @@ Token *Tokenize(char *p)
 		//assume num
 		if(IsDigit(p)){
 			int i = strtol(p, &p, 10);
-			InsertNumToken(i);
+			InsertNumToken(p, i);
 			continue;
 		}
 
