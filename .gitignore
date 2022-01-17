@@ -1,0 +1,8 @@
+*.o
+cc2
+*.s
+test.s
+test
+start.sh
+tokenize_test.sh
+sample
